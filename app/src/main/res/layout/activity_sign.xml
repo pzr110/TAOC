@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:background="@color/color_FFFFFF"
+    android:layout_height="match_parent">
+
+    <com.mirkowu.basetoolbar.BaseToolbar
+        android:id="@+id/baseToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="100dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableTop="@drawable/ic_user"
+                android:drawablePadding="2dp"
+                android:text="账号"
+                android:textColor="@color/color_333333"
+                android:textSize="12sp" />
+
+            <EditText
+                android:id="@+id/et_account"
+                android:layout_width="220dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="10dp"
+                android:background="@drawable/shape_solid_black"
+                android:hint="请输入账号"
+                android:paddingStart="10dp"
+                android:textColor="@color/color_333333"
+                android:textColorHint="@color/color_666666"
+                tools:ignore="RtlSymmetry" />
+
+
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableTop="@drawable/ic_password"
+                android:drawablePadding="2dp"
+                android:text="密码"
+                android:textColor="@color/color_333333"
+                android:textSize="12sp" />
+
+            <EditText
+                android:id="@+id/et_pass"
+                android:layout_width="220dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="10dp"
+                android:background="@drawable/shape_solid_black"
+                android:hint="请输入密码"
+                android:inputType="textPassword"
+                android:paddingStart="10dp"
+                android:textColor="@color/color_333333"
+                android:textColorHint="@color/color_666666"
+                tools:ignore="RtlSymmetry" />
+
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableTop="@drawable/ic_nick"
+                android:drawablePadding="2dp"
+                android:text="昵称"
+                android:textColor="@color/color_333333"
+                android:textSize="12sp" />
+
+            <EditText
+                android:id="@+id/et_nick"
+                android:layout_width="220dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="10dp"
+                android:background="@drawable/shape_solid_black"
+                android:hint="请输入昵称"
+                android:paddingStart="10dp"
+                android:textColor="@color/color_333333"
+                android:textColorHint="@color/color_666666"
+                tools:ignore="RtlSymmetry" />
+
+
+
+        </LinearLayout>
+
+
+
+        <TextView
+            android:id="@+id/tv_register"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            android:paddingVertical="10dp"
+            android:background="@drawable/shape_solid_black"
+            android:paddingHorizontal="110dp"
+            android:text="注册"
+            android:textColor="@color/color_333333" />
+    </LinearLayout>
+
+
+</LinearLayout>
