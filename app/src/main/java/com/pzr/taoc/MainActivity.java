@@ -48,6 +48,8 @@ public class MainActivity extends BaseActivity {
 
         initViewInfo();
 
+        // git test
+
     }
 
     private void initViewInfo() {
