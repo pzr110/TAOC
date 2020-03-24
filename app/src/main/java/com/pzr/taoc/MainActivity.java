@@ -16,6 +16,7 @@ import android.media.MediaPlayer;
 import android.media.PlaybackParams;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -28,11 +29,22 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.BarUtils;
 import com.blankj.utilcode.util.ToastUtils;
+import com.google.android.material.snackbar.Snackbar;
 import com.mirkowu.basetoolbar.BaseToolbar;
+import com.pzr.taoc.bean.DataBean;
+import com.pzr.taoc.bean.User;
 
 import java.io.File;
+import java.util.List;
+
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.datatype.BmobFile;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.FindListener;
+import cn.bmob.v3.listener.SaveListener;
 
 public class MainActivity extends BaseActivity {
 
@@ -46,6 +58,8 @@ public class MainActivity extends BaseActivity {
 
     private Spinner mSpinnerSpeed;
     private double mSpeed;
+
+    private ImageView mTvDownload;
 
 
     @Override
@@ -114,6 +128,8 @@ public class MainActivity extends BaseActivity {
         mTvTranslate = findViewById(R.id.tv_translate);
         mIvPlay = findViewById(R.id.iv_play);
         mIvPlay.setOnClickListener(this);
+        mTvDownload = findViewById(R.id.tv_download);
+        mTvDownload.setOnClickListener(this);
         mSpinnerSpeed = findViewById(R.id.spinner_speed);
         mSpinnerSpeed.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -159,7 +175,7 @@ public class MainActivity extends BaseActivity {
 
     }
 
-    private void Play(){
+    private void Play() {
         if (mMediaPlayer.isPlaying()) {
 //            mMediaPlayer.start();
             mIvPlay.setBackgroundResource(R.drawable.ic_pause);
@@ -218,11 +234,33 @@ public class MainActivity extends BaseActivity {
         mBaseToolbar.addRightImage(R.drawable.ic_user, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ToastUtils.showShort("个人中心");
+                ActivityUtils.startActivity(MineActivity.class);
+//                ToastUtils.showShort("个人中心");
             }
         });
 
 
+    }
+
+    /**
+     * name为football的类别
+     */
+    private void equal() {
+        BmobQuery<DataBean> categoryBmobQuery = new BmobQuery<>();
+        categoryBmobQuery.addWhereEqualTo("id", 1);
+        categoryBmobQuery.findObjects(new FindListener<DataBean>() {
+            @Override
+            public void done(List<DataBean> object, BmobException e) {
+                if (e == null) {
+                    ToastUtils.showShort("查询成功" + object.get(0).getVoice().toString());
+//                    Snackbar.make(mBtnEqual, "查询成功：" + object.size(), Snackbar.LENGTH_LONG).show();
+                } else {
+                    Log.e("BMOB", e.toString());
+                    ToastUtils.showShort("查询失败");
+//                    Snackbar.make(mBtnEqual, e.getMessage(), Snackbar.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
 
@@ -238,6 +276,34 @@ public class MainActivity extends BaseActivity {
                     mIvPlay.setBackgroundResource(R.drawable.ic_play);
                 }
                 break;
+
+            }
+            case R.id.tv_download: {
+                ToastUtils.showShort("添加数据");
+//                equal();
+
+                DataBean dataBean = new DataBean();
+                dataBean.setId(1);
+                dataBean.setOriginal("AAAAAAAAA");
+                dataBean.setTranslate("BBBBBBBB");
+                File file = new File("J:/PZR/res/01.mp3");
+                BmobFile bmobFile = new BmobFile(file);
+                dataBean.setVoice(bmobFile);
+                dataBean.save(new SaveListener<String>() {
+                    @Override
+                    public void done(String objectId, BmobException e) {
+                        if (e == null) {
+//                            toast("添加数据成功，返回objectId为："+objectId);
+                            ToastUtils.showShort("添加数据c成功");
+                        } else {
+                            Log.e("pzr","ERR:"+e.getMessage());
+                            ToastUtils.showShort("添加失败"+e.getMessage());
+//                            toast("创建数据失败：" + e.getMessage());
+                        }
+                    }
+                });
+                break;
+
             }
         }
     }

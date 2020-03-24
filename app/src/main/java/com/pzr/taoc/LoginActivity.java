@@ -1,6 +1,5 @@
 package com.pzr.taoc;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -14,9 +13,7 @@ import com.blankj.utilcode.util.BarUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.pzr.taoc.bean.User;
-import com.pzr.taoc.bean.UserBean;
 
-import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.SaveListener;
@@ -58,25 +55,26 @@ public class LoginActivity extends BaseActivity {
         mTvRegister.setOnClickListener(this);
     }
 
-    private void Login(String account, String pass) {
-        final UserBean user = new UserBean();
+
+
+    /**
+     * 账号密码登录
+     */
+    private void login(String account, String pass) {
+        final User user = new User();
         //此处替换为你的用户名
         user.setUsername(account);
         //此处替换为你的密码
         user.setPassword(pass);
-        user.login(new SaveListener<UserBean>() {
+        user.login(new SaveListener<User>() {
             @Override
-            public void done(UserBean bmobUser, BmobException e) {
+            public void done(User bmobUser, BmobException e) {
                 if (e == null) {
-                    UserBean user = BmobUser.getCurrentUser(UserBean.class);
+                    User user = BmobUser.getCurrentUser(User.class);
                     ActivityUtils.startActivity(MainActivity.class);
                     ToastUtils.showShort("登录成功");
                     SPUtils.getInstance().put("main",true);
                     ActivityUtils.finishAllActivities();
-//                    Intent intent = new Intent(LoginActivity.this,MainActivity.class);
-//                    startActivity(intent);
-//                    finish();
-
 //                    Snackbar.make(view, "登录成功：" + user.getUsername(), Snackbar.LENGTH_LONG).show();
                 } else {
                     ToastUtils.showShort("登录失败");
@@ -85,8 +83,6 @@ public class LoginActivity extends BaseActivity {
             }
         });
     }
-
-
     @Override
     protected void initData() {
 
@@ -96,7 +92,7 @@ public class LoginActivity extends BaseActivity {
     public void widgetClick(View view) {
         switch (view.getId()) {
             case R.id.tv_login: {
-                Login(mEtAccount.getText().toString(), mEtPass.getText().toString());
+                login(mEtAccount.getText().toString(), mEtPass.getText().toString());
                 break;
             }
             case R.id.tv_register: {
