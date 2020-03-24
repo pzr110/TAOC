@@ -16,28 +16,39 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
+import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.BarUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ScreenUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
+import com.google.android.material.snackbar.Snackbar;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.mirkowu.basetoolbar.BaseToolbar;
+import com.pzr.taoc.bean.User;
+import com.pzr.taoc.ui.mine.NickActivity;
 import com.pzr.taoc.utils.GlideEngine;
 import com.pzr.taoc.utils.NiceImageView;
 import com.pzr.taoc.utils.ShareBitmapUtils;
 
 import java.io.File;
 import java.util.List;
+
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.FindListener;
+import cn.bmob.v3.listener.UpdateListener;
 
 import static com.pzr.taoc.MainActivity.getStatusBarHeight;
 
@@ -72,12 +83,13 @@ public class MineActivity extends BaseActivity {
         mOivMineHead = findViewById(R.id.oiv_mine_head);
         mOivMineHead.setOnClickListener(this);
         Drawable headImg = ShareBitmapUtils.getDrawable(this, "headImg", null);
-        if (headImg==null){
+        if (headImg == null) {
             mOivMineHead.setBackgroundResource(R.drawable.ic_default_head);
-        }else {
+        } else {
             mOivMineHead.setImageDrawable(headImg);
         }
         mTvMineNickName = findViewById(R.id.tv_mine_nick_name);
+        mTvMineNickName.setOnClickListener(this);
         mLlSetPass = findViewById(R.id.ll_set_pass);
         mLlMyMsg = findViewById(R.id.ll_my_msg);
         mLlMyMp3 = findViewById(R.id.ll_my_mp3);
@@ -103,17 +115,43 @@ public class MineActivity extends BaseActivity {
         mBaseToolbar.setTitle("我的");
         mBaseToolbar.setTitleTextColor(Color.BLACK);
         mBaseToolbar.setBackButton(R.drawable.ic_back);
+
+        if (BmobUser.isLogin()) {
+
+            User user = BmobUser.getCurrentUser(User.class);
+            String nick = user.getNick();
+            mTvMineNickName.setText(nick);
+
+        } else {
+            ToastUtils.showShort("尚未登录，请先登录");
+//            Snackbar.make(view, "尚未登录，请先登录", Snackbar.LENGTH_LONG).show();
+        }
+
     }
+
+
+
 
     @Override
     public void widgetClick(View view) {
         switch (view.getId()) {
             case R.id.oiv_mine_head: {
-                HeadImageDialog();
+                if (BmobUser.isLogin()) {
+                    HeadImageDialog();
+                } else {
+                    ToastUtils.showShort("尚未登录，请先登录");
+                }
+                break;
+            }
+            case R.id.tv_mine_nick_name: {
+//                ActivityUtils.startActivity(NickActivity.class);
+                Intent intent = new Intent(MineActivity.this, NickActivity.class);
+                MineActivity.this.startActivityForResult(intent, 66);
                 break;
             }
         }
     }
+
 
     /**
      * 修改头像
@@ -224,13 +262,11 @@ public class MineActivity extends BaseActivity {
             }
         }
 //
-//        if (requestCode == 66 && resultCode == 66) {
-//
-//            mUserNickName = data.getStringExtra("userNickName");
-//            ToastUtils.showShort(mUserNickName);
-//            mTvUserInfoNickname.setText(mUserNickName);
-////            tv_user_info_nickname
-//        }
+        if (requestCode == 66 && resultCode == 66) {
+
+            String newNick = data.getStringExtra("newNick");
+            mTvMineNickName.setText(newNick);
+        }
     }
 
     private void setHeadImg(File file) {
