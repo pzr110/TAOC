@@ -56,6 +56,7 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".MineActivity" />
         <activity android:name=".ui.mine.NickActivity" />
+        <activity android:name=".ui.mine.SetPassActivity" />
     </application>
 
 </manifest>

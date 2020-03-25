@@ -37,6 +37,7 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.mirkowu.basetoolbar.BaseToolbar;
 import com.pzr.taoc.bean.User;
 import com.pzr.taoc.ui.mine.NickActivity;
+import com.pzr.taoc.ui.mine.SetPassActivity;
 import com.pzr.taoc.utils.GlideEngine;
 import com.pzr.taoc.utils.NiceImageView;
 import com.pzr.taoc.utils.ShareBitmapUtils;
@@ -91,6 +92,7 @@ public class MineActivity extends BaseActivity {
         mTvMineNickName = findViewById(R.id.tv_mine_nick_name);
         mTvMineNickName.setOnClickListener(this);
         mLlSetPass = findViewById(R.id.ll_set_pass);
+        mLlSetPass.setOnClickListener(this);
         mLlMyMsg = findViewById(R.id.ll_my_msg);
         mLlMyMp3 = findViewById(R.id.ll_my_mp3);
         mLlMyNote = findViewById(R.id.ll_my_note);
@@ -130,8 +132,6 @@ public class MineActivity extends BaseActivity {
     }
 
 
-
-
     @Override
     public void widgetClick(View view) {
         switch (view.getId()) {
@@ -147,6 +147,10 @@ public class MineActivity extends BaseActivity {
 //                ActivityUtils.startActivity(NickActivity.class);
                 Intent intent = new Intent(MineActivity.this, NickActivity.class);
                 MineActivity.this.startActivityForResult(intent, 66);
+                break;
+            }
+            case R.id.ll_set_pass: {
+                ActivityUtils.startActivity(SetPassActivity.class);
                 break;
             }
         }
