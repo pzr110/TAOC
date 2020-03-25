@@ -97,6 +97,7 @@ public class MineActivity extends BaseActivity {
         mLlMyMp3 = findViewById(R.id.ll_my_mp3);
         mLlMyNote = findViewById(R.id.ll_my_note);
         mLlCancel = findViewById(R.id.ll_cancel);
+        mLlCancel.setOnClickListener(this);
 
 
         initViewInfo();
@@ -153,7 +154,47 @@ public class MineActivity extends BaseActivity {
                 ActivityUtils.startActivity(SetPassActivity.class);
                 break;
             }
+            case R.id.ll_cancel: {
+                showCancelDialog();
+                break;
+            }
         }
+    }
+
+    private void showCancelDialog() {
+        final View view = LayoutInflater.from(this).inflate(R.layout.dialog_confirm_cancel, null, false);
+        final AlertDialog dialog = new AlertDialog.Builder(this).setView(view).create();
+
+        Window window = dialog.getWindow();
+        //这一句消除白块
+        window.setBackgroundDrawable(new BitmapDrawable());
+        TextView dialog_title = view.findViewById(R.id.dialog_title);
+        TextView tv_submit = view.findViewById(R.id.tv_submit);
+        tv_submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SPUtils.getInstance().put("main",false);
+                ActivityUtils.startActivity(LoginActivity.class);
+                dialog.dismiss();
+                ActivityUtils.finishAllActivities();
+            }
+        });
+
+        TextView tv_cancel = view.findViewById(R.id.tv_cancel);
+        tv_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+
+        dialog.show();
+        //此处设置位置窗体大小，我这里设置为了手机屏幕宽度的3/4  注意一定要在show方法调用后再写设置窗口大小的代码，否则不起效果会
+        //此处设置位置窗体大小，
+//        dialog.getWindow().setLayout(width,height);
+        dialog.getWindow().setLayout((ScreenUtils.getScreenWidth() / 4 * 3), LinearLayout.LayoutParams.WRAP_CONTENT);
+
     }
 
 
