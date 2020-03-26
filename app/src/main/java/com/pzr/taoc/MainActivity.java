@@ -1,7 +1,6 @@
 package com.pzr.taoc;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -15,13 +14,11 @@ import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.media.PlaybackParams;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.CompoundButton;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -32,12 +29,12 @@ import android.widget.Toast;
 import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.BarUtils;
 import com.blankj.utilcode.util.ToastUtils;
-import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mirkowu.basetoolbar.BaseToolbar;
 import com.pzr.taoc.bean.DataBean;
-import com.pzr.taoc.bean.User;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
@@ -61,6 +58,17 @@ public class MainActivity extends BaseActivity {
 
     private ImageView mTvDownload;
 
+    private TextView mTvOriginal;
+    private FloatingActionButton mFabComment;
+    private FloatingActionButton mFabNote;
+
+
+    private ImageView mIvLeft;
+    private ImageView mIvRight;
+
+    int mId = 0;
+    private int mSize;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,12 +76,14 @@ public class MainActivity extends BaseActivity {
         BarUtils.setStatusBarColor(this, Color.TRANSPARENT);
         BarUtils.setStatusBarLightMode(this, true);
 
+        loadData(mId);
+
         mAssetManager = getResources().getAssets();
         //权限判断，如果没有权限就请求权限
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
         } else {
-            initMediaPlayer();//初始化播放器 MediaPlayer
+            initMediaPlayer(mId);//初始化播放器 MediaPlayer
         }
 
     }
@@ -87,12 +97,14 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    private void initMediaPlayer() {
+    private void initMediaPlayer(int id) {
         try {
 //            File file = new File(Environment.getExternalStorageDirectory(), "music.mp3");
-            AssetFileDescriptor fileDescriptor = mAssetManager.openFd("01.mp3");
+            AssetFileDescriptor fileDescriptor = mAssetManager.openFd("audio_" + id + ".mp3");
+//            AssetFileDescriptor fileDescriptor = mAssetManager.openFd( "1.mp3");
+            ToastUtils.showShort("audio_" + id + ".mp3");
             mMediaPlayer.setDataSource(fileDescriptor.getFileDescriptor(), fileDescriptor.getStartOffset(), fileDescriptor.getStartOffset());//指定音频文件路径
-            mMediaPlayer.setLooping(true);//设置为循环播放
+//            mMediaPlayer.setLooping(true);//设置为循环播放
             mMediaPlayer.prepare();//初始化播放器MediaPlayer
 
         } catch (Exception e) {
@@ -105,7 +117,7 @@ public class MainActivity extends BaseActivity {
         switch (requestCode) {
             case 1:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    initMediaPlayer();
+                    initMediaPlayer(mId);
                 } else {
                     Toast.makeText(this, "拒绝权限，将无法使用程序。", Toast.LENGTH_LONG).show();
                     finish();
@@ -131,6 +143,15 @@ public class MainActivity extends BaseActivity {
         mTvDownload = findViewById(R.id.tv_download);
         mTvDownload.setOnClickListener(this);
         mSpinnerSpeed = findViewById(R.id.spinner_speed);
+
+        mTvOriginal = findViewById(R.id.tv_original);
+        mFabComment = findViewById(R.id.fab_comment);
+        mFabNote = findViewById(R.id.fab_note);
+        mIvLeft = findViewById(R.id.iv_left);
+        mIvRight = findViewById(R.id.iv_right);
+        mIvLeft.setOnClickListener(this);
+        mIvRight.setOnClickListener(this);
+
         mSpinnerSpeed.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -269,9 +290,11 @@ public class MainActivity extends BaseActivity {
         switch (view.getId()) {
             case R.id.iv_play: {
                 if (!mMediaPlayer.isPlaying()) {
+                    ToastUtils.showShort("111111");
                     mMediaPlayer.start();
                     mIvPlay.setBackgroundResource(R.drawable.ic_pause);
                 } else {
+                    ToastUtils.showShort("22222");
                     mMediaPlayer.pause();
                     mIvPlay.setBackgroundResource(R.drawable.ic_play);
                 }
@@ -296,8 +319,8 @@ public class MainActivity extends BaseActivity {
 //                            toast("添加数据成功，返回objectId为："+objectId);
                             ToastUtils.showShort("添加数据c成功");
                         } else {
-                            Log.e("pzr","ERR:"+e.getMessage());
-                            ToastUtils.showShort("添加失败"+e.getMessage());
+                            Log.e("pzr", "ERR:" + e.getMessage());
+                            ToastUtils.showShort("添加失败" + e.getMessage());
 //                            toast("创建数据失败：" + e.getMessage());
                         }
                     }
@@ -305,6 +328,85 @@ public class MainActivity extends BaseActivity {
                 break;
 
             }
+            case R.id.iv_left: {
+//                mTvOriginal.setText(R.string.app_name);
+                mId -= 1;
+                loadData(mId);
+
+                mMediaPlayer.stop();
+//                try {
+                    mMediaPlayer.reset();
+                    initMediaPlayer(mId);
+//                    mMediaPlayer.prepare();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+                if (mMediaPlayer.isPlaying()) {
+                    mIvPlay.setBackgroundResource(R.drawable.ic_play);
+                }
+
+                if (mId >= 0 && mId < mSize) {
+                    mIvRight.setEnabled(true);
+                    mIvLeft.setEnabled(true);
+                }
+                break;
+            }
+            case R.id.iv_right: {
+//                mTvOriginal.setText(R.string.app_name);
+                mId += 1;
+                loadData(mId);
+                initMediaPlayer(mId);
+                mMediaPlayer.stop();
+                mMediaPlayer.reset();
+                initMediaPlayer(mId);
+//                try {
+//                    mMediaPlayer.prepare();
+//                    initMediaPlayer(mId);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+                if (mMediaPlayer.isPlaying()) {
+
+                    mIvPlay.setBackgroundResource(R.drawable.ic_play);
+                }
+
+
+                if (mId >= 0 && mId < mSize) {
+                    mIvRight.setEnabled(true);
+                    mIvLeft.setEnabled(true);
+                }
+                break;
+            }
         }
+    }
+
+    private void loadData(int id) {
+        BmobQuery<DataBean> bmobQuery = new BmobQuery<DataBean>();
+        bmobQuery.addQueryKeys("original,translate");
+        bmobQuery.findObjects(new FindListener<DataBean>() {
+            @Override
+            public void done(List<DataBean> list, BmobException e) {
+                if (e == null) {
+                    mSize = list.size();
+                    if (id >= 0 && id < mSize) {
+                        DataBean dataBean = list.get(id);
+                        mTvOriginal.setText(dataBean.getOriginal());
+                        mTvTranslate.setText(dataBean.getTranslate());
+                    } else if (id < 0) {
+//                        mIvRight.setEnabled(false);
+                        mIvLeft.setEnabled(false);
+                        mId = 0;
+                        ToastUtils.showShort("没有了...");
+                    } else if (id >= mSize) {
+                        mIvRight.setEnabled(false);
+                        mId = mSize - 1;
+                        ToastUtils.showShort("没有了...");
+                    }
+
+                } else {
+                    ToastUtils.showShort(e.getErrorCode());
+                }
+            }
+        });
     }
 }
