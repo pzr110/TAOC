@@ -102,7 +102,7 @@ public class MainActivity extends BaseActivity {
 //            File file = new File(Environment.getExternalStorageDirectory(), "music.mp3");
             AssetFileDescriptor fileDescriptor = mAssetManager.openFd("audio_" + id + ".mp3");
 //            AssetFileDescriptor fileDescriptor = mAssetManager.openFd( "1.mp3");
-            ToastUtils.showShort("audio_" + id + ".mp3");
+//            ToastUtils.showShort("audio_" + id + ".mp3");
             mMediaPlayer.setDataSource(fileDescriptor.getFileDescriptor(), fileDescriptor.getStartOffset(), fileDescriptor.getStartOffset());//指定音频文件路径
 //            mMediaPlayer.setLooping(true);//设置为循环播放
             mMediaPlayer.prepare();//初始化播放器MediaPlayer
@@ -288,19 +288,7 @@ public class MainActivity extends BaseActivity {
     @Override
     public void widgetClick(View view) {
         switch (view.getId()) {
-            case R.id.iv_play: {
-                if (!mMediaPlayer.isPlaying()) {
-                    ToastUtils.showShort("111111");
-                    mMediaPlayer.start();
-                    mIvPlay.setBackgroundResource(R.drawable.ic_pause);
-                } else {
-                    ToastUtils.showShort("22222");
-                    mMediaPlayer.pause();
-                    mIvPlay.setBackgroundResource(R.drawable.ic_play);
-                }
-                break;
 
-            }
             case R.id.tv_download: {
                 ToastUtils.showShort("添加数据");
 //                equal();
@@ -328,22 +316,27 @@ public class MainActivity extends BaseActivity {
                 break;
 
             }
-            case R.id.iv_left: {
-//                mTvOriginal.setText(R.string.app_name);
-                mId -= 1;
-                loadData(mId);
 
-                mMediaPlayer.stop();
-//                try {
-                    mMediaPlayer.reset();
-                    initMediaPlayer(mId);
-//                    mMediaPlayer.prepare();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-                if (mMediaPlayer.isPlaying()) {
+            case R.id.iv_play: {
+                if (!mMediaPlayer.isPlaying()) {
+                    mMediaPlayer.start();
+                    mIvPlay.setBackgroundResource(R.drawable.ic_pause);
+                } else {
+                    mMediaPlayer.pause();
                     mIvPlay.setBackgroundResource(R.drawable.ic_play);
                 }
+                break;
+
+            }
+
+            case R.id.iv_left: {
+                mId -= 1;
+                loadData(mId);
+                mMediaPlayer.stop();
+                mMediaPlayer.reset();
+                initMediaPlayer(mId);
+
+                mIvPlay.setBackgroundResource(R.drawable.ic_play);
 
                 if (mId >= 0 && mId < mSize) {
                     mIvRight.setEnabled(true);
@@ -352,24 +345,13 @@ public class MainActivity extends BaseActivity {
                 break;
             }
             case R.id.iv_right: {
-//                mTvOriginal.setText(R.string.app_name);
                 mId += 1;
                 loadData(mId);
                 initMediaPlayer(mId);
                 mMediaPlayer.stop();
                 mMediaPlayer.reset();
                 initMediaPlayer(mId);
-//                try {
-//                    mMediaPlayer.prepare();
-//                    initMediaPlayer(mId);
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-                if (mMediaPlayer.isPlaying()) {
-
-                    mIvPlay.setBackgroundResource(R.drawable.ic_play);
-                }
-
+                mIvPlay.setBackgroundResource(R.drawable.ic_play);
 
                 if (mId >= 0 && mId < mSize) {
                     mIvRight.setEnabled(true);
