@@ -84,4 +84,6 @@ dependencies {
     // 动态权限
     implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
     implementation 'io.reactivex:rxjava:1.2.1'
+
+//    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.2'
 }

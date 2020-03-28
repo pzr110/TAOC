@@ -50,6 +50,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mirkowu.basetoolbar.BaseToolbar;
 import com.pzr.taoc.bean.DataBean;
+import com.pzr.taoc.ui.catalog.CatalogActivity;
 import com.pzr.taoc.utils.comment.CommentDialogMutiAdapter;
 import com.pzr.taoc.utils.comment.InputTextMsgDialog;
 import com.pzr.taoc.utils.comment.bean.CommentEntity;
@@ -656,7 +657,8 @@ public class MainActivity extends BaseActivity implements BaseQuickAdapter.Reque
         mBaseToolbar.addLeftImage(R.drawable.ic_catalog, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ToastUtils.showShort("目录");
+//                ToastUtils.showShort("目录");
+                ActivityUtils.startActivity(CatalogActivity.class);
             }
         });
 
@@ -667,6 +669,13 @@ public class MainActivity extends BaseActivity implements BaseQuickAdapter.Reque
 //                ToastUtils.showShort("个人中心");
             }
         });
+
+        Intent intent = getIntent();
+        String catalogId = intent.getStringExtra("catalogId");
+        if (catalogId!=null){
+            mId = Integer.parseInt(catalogId);
+            loadData(mId);
+        }
 
 
     }
@@ -860,6 +869,8 @@ public class MainActivity extends BaseActivity implements BaseQuickAdapter.Reque
         Log.e(TAG, "taskRunning");
 
     }
+
+
 
 
     private void loadData(int id) {
