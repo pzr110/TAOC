@@ -77,4 +77,11 @@ dependencies {
 
     //圆角圆形图片控件 只要是可以带边框
     implementation 'com.makeramen:roundedimageview:2.3.0'
+
+    implementation 'com.arialyy.aria:core:3.8.6'
+    annotationProcessor 'com.arialyy.aria:compiler:3.8.6'
+
+    // 动态权限
+    implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
+    implementation 'io.reactivex:rxjava:1.2.1'
 }

@@ -8,7 +8,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
@@ -16,7 +18,10 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.media.PlaybackParams;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -31,8 +36,12 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.arialyy.annotations.Download;
+import com.arialyy.aria.core.Aria;
+import com.arialyy.aria.core.task.DownloadTask;
 import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.BarUtils;
+import com.blankj.utilcode.util.PathUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
@@ -47,6 +56,7 @@ import com.pzr.taoc.utils.comment.bean.CommentEntity;
 import com.pzr.taoc.utils.comment.bean.CommentMoreBean;
 import com.pzr.taoc.utils.comment.bean.FirstLevelBean;
 import com.pzr.taoc.utils.comment.bean.SecondLevelBean;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,8 +68,9 @@ import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.SaveListener;
+import rx.functions.Action1;
 
-public class MainActivity extends BaseActivity implements BaseQuickAdapter.RequestLoadMoreListener{
+public class MainActivity extends BaseActivity implements BaseQuickAdapter.RequestLoadMoreListener {
 
     private BaseToolbar mBaseToolbar;
     private Switch mSwithTranslate;
@@ -99,11 +110,14 @@ public class MainActivity extends BaseActivity implements BaseQuickAdapter.Reque
 
     private long totalCount = 22;
 
+    final RxPermissions rxPermissions = new RxPermissions(this); // where this is an Activity or Fragment instance
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         BarUtils.setStatusBarColor(this, Color.TRANSPARENT);
         BarUtils.setStatusBarLightMode(this, true);
+        Aria.download(this).register();
 
         loadData(mId);
 
@@ -159,6 +173,7 @@ public class MainActivity extends BaseActivity implements BaseQuickAdapter.Reque
      * 对数据重新进行排列
      * 目的是为了让一级评论和二级评论同为item
      * 解决滑动卡顿问题
+     *
      * @param position
      */
     private void dataSort(int position) {
@@ -382,7 +397,7 @@ public class MainActivity extends BaseActivity implements BaseQuickAdapter.Reque
             inputTextMsgDialog.setmOnTextSendListener(new InputTextMsgDialog.OnTextSendListener() {
                 @Override
                 public void onTextSend(String msg) {
-                    addComment(isReply,item,position,msg);
+                    addComment(isReply, item, position, msg);
                 }
 
                 @Override
@@ -400,7 +415,7 @@ public class MainActivity extends BaseActivity implements BaseQuickAdapter.Reque
     }
 
     //添加评论
-    private void addComment(boolean isReply, MultiItemEntity item, final int position,String msg){
+    private void addComment(boolean isReply, MultiItemEntity item, final int position, String msg) {
         final String userName = "hui";
         if (position >= 0) {
             //添加二级评论
@@ -491,8 +506,10 @@ public class MainActivity extends BaseActivity implements BaseQuickAdapter.Reque
             AssetFileDescriptor fileDescriptor = mAssetManager.openFd("audio_" + id + ".mp3");
 //            AssetFileDescriptor fileDescriptor = mAssetManager.openFd( "1.mp3");
 //            ToastUtils.showShort("audio_" + id + ".mp3");
+//            Uri uri = Uri.parse("https://ljytly.oss-cn-chengdu.aliyuncs.com/voice/audio_"+id+".mp3");
             mMediaPlayer.setDataSource(fileDescriptor.getFileDescriptor(), fileDescriptor.getStartOffset(), fileDescriptor.getStartOffset());//指定音频文件路径
 //            mMediaPlayer.setLooping(true);//设置为循环播放
+//            mMediaPlayer.setDataSource(this,uri);
             mMediaPlayer.prepare();//初始化播放器MediaPlayer
 
         } catch (Exception e) {
@@ -680,29 +697,10 @@ public class MainActivity extends BaseActivity implements BaseQuickAdapter.Reque
         switch (view.getId()) {
 
             case R.id.tv_download: {
-                ToastUtils.showShort("添加数据");
-//                equal();
+                ToastUtils.showShort("下载中...");
+                MyPermissions();
+                downStart();
 
-                DataBean dataBean = new DataBean();
-                dataBean.setId(1);
-                dataBean.setOriginal("AAAAAAAAA");
-                dataBean.setTranslate("BBBBBBBB");
-                File file = new File("J:/PZR/res/01.mp3");
-                BmobFile bmobFile = new BmobFile(file);
-                dataBean.setVoice(bmobFile);
-                dataBean.save(new SaveListener<String>() {
-                    @Override
-                    public void done(String objectId, BmobException e) {
-                        if (e == null) {
-//                            toast("添加数据成功，返回objectId为："+objectId);
-                            ToastUtils.showShort("添加数据c成功");
-                        } else {
-                            Log.e("pzr", "ERR:" + e.getMessage());
-                            ToastUtils.showShort("添加失败" + e.getMessage());
-//                            toast("创建数据失败：" + e.getMessage());
-                        }
-                    }
-                });
                 break;
 
             }
@@ -758,6 +756,104 @@ public class MainActivity extends BaseActivity implements BaseQuickAdapter.Reque
             }
         }
     }
+
+    @SuppressLint("CheckResult")
+    private void MyPermissions() {
+        //申请运行时权限
+        rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS)
+                .subscribe(granted -> {
+                    if (granted){
+                        ToastUtils.showShort("允许权限");
+                        downStart();
+                    }else {
+                        ToastUtils.showShort("禁止权限");
+                    }
+                });
+
+    }
+
+    private void downStart() {
+        ToastUtils.showShort("开始下载");
+        Uri uri = Uri.parse("https://ljytly.oss-cn-chengdu.aliyuncs.com/voice/audio_" + mId + ".mp3");
+        String downloadCachePath = Environment.getExternalStorageDirectory().getPath() + "/" + mId + ".mp3";
+        Aria.download(this)
+                .load(uri.toString())     //读取下载地址
+                .setFilePath(downloadCachePath) //设置文件保存的完整路径
+                .create();//创建并启动下载
+
+
+    }
+
+    @Download.onPre
+    void onPre(DownloadTask task) {
+//        mAdapter.updateState(task.getEntity());
+        Log.e(TAG, "onPre");
+    }
+
+    @Download.onTaskRunning
+    void running(DownloadTask task) {
+//        if(task.getKey().eques(url)){
+//		....
+//            可以通过url判断是否是指定任务的回调
+//        }
+        int p = task.getPercent();    //任务进度百分比
+        String speed = task.getConvertSpeed();    //转换单位后的下载速度，单位转换需要在配置文件中打开
+        long speed1 = task.getSpeed(); //原始byte长度速度
+        Log.e(TAG, "running:" + task);
+    }
+
+    @Download.onTaskStart
+    void taskStart(DownloadTask task) {
+//        Log.d(TAG, task.getTaskName() + ", " + task.getState());
+//        mAdapter.updateState(task.getEntity());
+        Log.e(TAG, "taskStart");
+
+    }
+
+    @Download.onTaskResume
+    void taskResume(DownloadTask task) {
+//        Log.d(TAG, task.getTaskName() + ", " + task.getState());
+//        mAdapter.updateState(task.getEntity());
+        Log.e(TAG, "taskResume");
+
+    }
+
+    @Download.onTaskStop
+    void taskStop(DownloadTask task) {
+//        mAdapter.updateState(task.getEntity());
+        Log.e(TAG, "taskStop");
+
+    }
+
+    @Download.onTaskCancel
+    void taskCancel(DownloadTask task) {
+//        mAdapter.updateState(task.getEntity());
+        Log.e(TAG, "taskCancel");
+
+    }
+
+    @Download.onTaskFail
+    void taskFail(DownloadTask task) {
+//        mAdapter.updateState(task.getEntity());
+        Log.e(TAG, "taskFail" + task);
+
+    }
+
+    @Download.onTaskComplete
+    void taskComplete(DownloadTask task) {
+//        mAdapter.updateState(task.getEntity());
+        Log.e(TAG, "taskComplete");
+        ToastUtils.showShort("下载完成");
+
+    }
+
+    @Download.onTaskRunning()
+    void taskRunning(DownloadTask task) {
+//        mAdapter.setProgress(task.getEntity());
+        Log.e(TAG, "taskRunning");
+
+    }
+
 
     private void loadData(int id) {
         BmobQuery<DataBean> bmobQuery = new BmobQuery<DataBean>();
