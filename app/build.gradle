@@ -70,4 +70,11 @@ dependencies {
 
     // 圆形图片
     implementation 'com.github.SheHuan:NiceImageView:1.0.5'
+
+
+    //万能适配器
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.50'
+
+    //圆角圆形图片控件 只要是可以带边框
+    implementation 'com.makeramen:roundedimageview:2.3.0'
 }
