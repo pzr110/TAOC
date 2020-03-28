@@ -13,6 +13,16 @@ public class DataBean extends BmobObject {
     private String translate;
     private BmobFile voice;
 
+    private String note;
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
     public BmobFile getVoice() {
         return voice;
     }

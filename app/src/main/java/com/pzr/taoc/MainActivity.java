@@ -111,6 +111,7 @@ public class MainActivity extends BaseActivity implements BaseQuickAdapter.Reque
     private long totalCount = 22;
 
     final RxPermissions rxPermissions = new RxPermissions(this); // where this is an Activity or Fragment instance
+    private String mObjectId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -754,18 +755,24 @@ public class MainActivity extends BaseActivity implements BaseQuickAdapter.Reque
                 bottomSheetDialog.show();
                 break;
             }
+            case R.id.fab_note: {
+                Intent intent = new Intent(MainActivity.this, NoteActivity.class);
+                intent.putExtra("ObjectId", mObjectId);
+                ActivityUtils.startActivity(intent);
+                break;
+            }
         }
     }
 
     @SuppressLint("CheckResult")
     private void MyPermissions() {
         //申请运行时权限
-        rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS)
+        rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS)
                 .subscribe(granted -> {
-                    if (granted){
+                    if (granted) {
                         ToastUtils.showShort("允许权限");
                         downStart();
-                    }else {
+                    } else {
                         ToastUtils.showShort("禁止权限");
                     }
                 });
@@ -857,7 +864,7 @@ public class MainActivity extends BaseActivity implements BaseQuickAdapter.Reque
 
     private void loadData(int id) {
         BmobQuery<DataBean> bmobQuery = new BmobQuery<DataBean>();
-        bmobQuery.addQueryKeys("original,translate");
+        bmobQuery.addQueryKeys("objectId,original,translate");
         bmobQuery.findObjects(new FindListener<DataBean>() {
             @Override
             public void done(List<DataBean> list, BmobException e) {
@@ -865,6 +872,8 @@ public class MainActivity extends BaseActivity implements BaseQuickAdapter.Reque
                     mSize = list.size();
                     if (id >= 0 && id < mSize) {
                         DataBean dataBean = list.get(id);
+                        mObjectId = dataBean.getObjectId();
+//                        ToastUtils.showShort(mObjectId);
                         mTvOriginal.setText(dataBean.getOriginal());
                         mTvTranslate.setText(dataBean.getTranslate());
                     } else if (id < 0) {
