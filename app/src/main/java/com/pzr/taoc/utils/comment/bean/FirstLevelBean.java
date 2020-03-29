@@ -4,6 +4,8 @@ import com.chad.library.adapter.base.entity.MultiItemEntity;
 
 import java.util.List;
 
+import cn.bmob.v3.BmobObject;
+
 import static com.pzr.taoc.utils.comment.bean.CommentEntity.TYPE_COMMENT_PARENT;
 
 
@@ -12,7 +14,7 @@ import static com.pzr.taoc.utils.comment.bean.CommentEntity.TYPE_COMMENT_PARENT;
  * 时间：2019/12/11 0011
  * 描述：
  */
-public class FirstLevelBean implements MultiItemEntity {
+public class FirstLevelBean extends BmobObject implements MultiItemEntity {
     
     private List<SecondLevelBean> secondLevelBeans;
 

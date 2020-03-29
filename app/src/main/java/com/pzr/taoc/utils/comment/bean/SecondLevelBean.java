@@ -2,6 +2,8 @@ package com.pzr.taoc.utils.comment.bean;
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 
+import cn.bmob.v3.BmobObject;
+
 import static com.pzr.taoc.utils.comment.bean.CommentEntity.TYPE_COMMENT_CHILD;
 
 
@@ -10,7 +12,7 @@ import static com.pzr.taoc.utils.comment.bean.CommentEntity.TYPE_COMMENT_CHILD;
  * 时间：2019/12/11 0011
  * 描述：
  */
-public class SecondLevelBean implements MultiItemEntity {
+public class SecondLevelBean extends BmobObject implements MultiItemEntity {
 
     //二级评论id
     private String id;

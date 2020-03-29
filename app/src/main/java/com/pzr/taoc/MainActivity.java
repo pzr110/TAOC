@@ -49,6 +49,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mirkowu.basetoolbar.BaseToolbar;
+import com.pzr.taoc.bean.CatalogBean;
 import com.pzr.taoc.bean.DataBean;
 import com.pzr.taoc.ui.catalog.CatalogActivity;
 import com.pzr.taoc.utils.comment.CommentDialogMutiAdapter;
@@ -137,10 +138,30 @@ public class MainActivity extends BaseActivity implements BaseQuickAdapter.Reque
 
     }
 
+    private void save() {
+        CommentMoreBean catalogBean = new CommentMoreBean();
+        catalogBean.setPosition(0);
+
+        catalogBean.save(new SaveListener<String>() {
+            @Override
+            public void done(String objectId, BmobException e) {
+                if (e == null) {
+//                    mObjectId = objectId;
+                    ToastUtils.showShort("成功");
+//                    Snackbar.make(mBtnSave, "新增成功：" + mObjectId, Snackbar.LENGTH_LONG).show();
+                } else {
+//                    Log.e("BMOB", e.toString());
+//                    Snackbar.make(mBtnSave, e.getMessage(), Snackbar.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+
     //原始数据 一般是从服务器接口请求过来的
     private void initCommentData() {
+        save();
         int size = 10;
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < 1; i++) {
             FirstLevelBean firstLevelBean = new FirstLevelBean();
             firstLevelBean.setContent("第" + (i + 1) + "人评论内容" + (i % 3 == 0 ? content + (i + 1) + "次" : ""));
             firstLevelBean.setCreateTime(System.currentTimeMillis());
@@ -152,7 +173,7 @@ public class MainActivity extends BaseActivity implements BaseQuickAdapter.Reque
             firstLevelBean.setTotalCount(i + size);
 
             List<SecondLevelBean> beans = new ArrayList<>();
-            for (int j = 0; j < 10; j++) {
+            for (int j = 0; j < 1; j++) {
                 SecondLevelBean secondLevelBean = new SecondLevelBean();
                 secondLevelBean.setContent("一级第" + (i + 1) + "人 二级第" + (j + 1) + "人评论内容" + (j % 3 == 0 ? content + (j + 1) + "次" : ""));
                 secondLevelBean.setCreateTime(System.currentTimeMillis());

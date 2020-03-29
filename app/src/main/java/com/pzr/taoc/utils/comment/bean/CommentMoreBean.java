@@ -2,6 +2,8 @@ package com.pzr.taoc.utils.comment.bean;
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 
+import cn.bmob.v3.BmobObject;
+
 import static com.pzr.taoc.utils.comment.bean.CommentEntity.TYPE_COMMENT_MORE;
 
 
@@ -10,7 +12,7 @@ import static com.pzr.taoc.utils.comment.bean.CommentEntity.TYPE_COMMENT_MORE;
  * 时间：2019/12/12 0012
  * 描述：更多item
  */
-public class CommentMoreBean implements MultiItemEntity {
+public class CommentMoreBean extends BmobObject implements MultiItemEntity {
 
     private long totalCount;
     private long position;

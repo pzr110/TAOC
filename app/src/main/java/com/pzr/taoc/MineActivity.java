@@ -37,6 +37,7 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.mirkowu.basetoolbar.BaseToolbar;
 import com.pzr.taoc.bean.User;
 import com.pzr.taoc.ui.mine.NickActivity;
+import com.pzr.taoc.ui.mine.NoteListActivity;
 import com.pzr.taoc.ui.mine.SetPassActivity;
 import com.pzr.taoc.utils.GlideEngine;
 import com.pzr.taoc.utils.NiceImageView;
@@ -98,6 +99,7 @@ public class MineActivity extends BaseActivity {
         mLlMyNote = findViewById(R.id.ll_my_note);
         mLlCancel = findViewById(R.id.ll_cancel);
         mLlCancel.setOnClickListener(this);
+        mLlMyNote.setOnClickListener(this);
 
 
         initViewInfo();
@@ -157,6 +159,9 @@ public class MineActivity extends BaseActivity {
             case R.id.ll_cancel: {
                 showCancelDialog();
                 break;
+            }
+            case R.id.ll_my_note:{
+                ActivityUtils.startActivity(NoteListActivity.class);
             }
         }
     }

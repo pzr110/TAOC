@@ -68,6 +68,7 @@
         <activity android:name=".ui.mine.SetPassActivity" />
         <activity android:name=".NoteActivity" />
         <activity android:name=".ui.catalog.CatalogActivity" />
+        <activity android:name=".ui.mine.NoteListActivity" />
     </application>
 
 </manifest>
