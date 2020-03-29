@@ -39,6 +39,7 @@ import com.pzr.taoc.bean.User;
 import com.pzr.taoc.ui.mine.NickActivity;
 import com.pzr.taoc.ui.mine.NoteListActivity;
 import com.pzr.taoc.ui.mine.SetPassActivity;
+import com.pzr.taoc.ui.mine.VoiceActivity;
 import com.pzr.taoc.utils.GlideEngine;
 import com.pzr.taoc.utils.NiceImageView;
 import com.pzr.taoc.utils.ShareBitmapUtils;
@@ -100,6 +101,7 @@ public class MineActivity extends BaseActivity {
         mLlCancel = findViewById(R.id.ll_cancel);
         mLlCancel.setOnClickListener(this);
         mLlMyNote.setOnClickListener(this);
+        mLlMyMp3.setOnClickListener(this);
 
 
         initViewInfo();
@@ -162,6 +164,11 @@ public class MineActivity extends BaseActivity {
             }
             case R.id.ll_my_note:{
                 ActivityUtils.startActivity(NoteListActivity.class);
+                break;
+            }
+            case R.id.ll_my_mp3:{
+                ActivityUtils.startActivity(VoiceActivity.class);
+                break;
             }
         }
     }

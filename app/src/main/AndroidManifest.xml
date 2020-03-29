@@ -69,6 +69,7 @@
         <activity android:name=".NoteActivity" />
         <activity android:name=".ui.catalog.CatalogActivity" />
         <activity android:name=".ui.mine.NoteListActivity" />
+        <activity android:name=".ui.mine.VoiceActivity" />
     </application>
 
 </manifest>
