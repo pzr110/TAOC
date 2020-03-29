@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,6 +37,7 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.mirkowu.basetoolbar.BaseToolbar;
 import com.pzr.taoc.bean.User;
+import com.pzr.taoc.ui.mine.MessageActivity;
 import com.pzr.taoc.ui.mine.NickActivity;
 import com.pzr.taoc.ui.mine.NoteListActivity;
 import com.pzr.taoc.ui.mine.SetPassActivity;
@@ -102,6 +104,7 @@ public class MineActivity extends BaseActivity {
         mLlCancel.setOnClickListener(this);
         mLlMyNote.setOnClickListener(this);
         mLlMyMp3.setOnClickListener(this);
+        mLlMyMsg.setOnClickListener(this);
 
 
         initViewInfo();
@@ -168,6 +171,10 @@ public class MineActivity extends BaseActivity {
             }
             case R.id.ll_my_mp3:{
                 ActivityUtils.startActivity(VoiceActivity.class);
+                break;
+            }
+            case R.id.ll_my_msg:{
+                ActivityUtils.startActivity(MessageActivity.class);
                 break;
             }
         }

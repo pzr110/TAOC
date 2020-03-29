@@ -84,7 +84,7 @@ public class VoiceActivity extends BaseActivity {
     @Override
     protected void initData() {
         mBaseToolbar.setBackgroundColor(Color.TRANSPARENT);
-        mBaseToolbar.setTitle("我的笔记");
+        mBaseToolbar.setTitle("我的音频");
         mBaseToolbar.setTitleTextColor(Color.BLACK);
         mBaseToolbar.setBackButton(R.drawable.ic_back);
 
@@ -142,7 +142,7 @@ public class VoiceActivity extends BaseActivity {
     }
 
     private void getInfo() {
-        String path = Environment.getExternalStorageDirectory().getPath();
+        String path = Environment.getExternalStorageDirectory().getPath()+"/Voice/";
         List<File> files = FileUtils.listFilesInDir(path);
 
         Log.e("FILEPZR", "P:" + files);

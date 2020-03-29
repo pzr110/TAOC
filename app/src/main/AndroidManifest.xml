@@ -70,6 +70,8 @@
         <activity android:name=".ui.catalog.CatalogActivity" />
         <activity android:name=".ui.mine.NoteListActivity" />
         <activity android:name=".ui.mine.VoiceActivity" />
+        <activity android:name=".SearchActivity" />
+        <activity android:name=".ui.mine.MessageActivity" />
     </application>
 
 </manifest>

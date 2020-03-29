@@ -41,6 +41,7 @@ import com.arialyy.aria.core.Aria;
 import com.arialyy.aria.core.task.DownloadTask;
 import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.BarUtils;
+import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.PathUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -90,6 +91,8 @@ public class MainActivity extends BaseActivity implements BaseQuickAdapter.Reque
     private TextView mTvOriginal;
     private FloatingActionButton mFabComment;
     private FloatingActionButton mFabNote;
+
+    private FloatingActionButton mFabSearch;
 
 
     private ImageView mIvLeft;
@@ -581,6 +584,8 @@ public class MainActivity extends BaseActivity implements BaseQuickAdapter.Reque
         mIvRight.setOnClickListener(this);
         mFabComment.setOnClickListener(this);
         mFabNote.setOnClickListener(this);
+        mFabSearch = findViewById(R.id.fab_search);
+        mFabSearch.setOnClickListener(this);
 
         mSpinnerSpeed.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -693,7 +698,7 @@ public class MainActivity extends BaseActivity implements BaseQuickAdapter.Reque
 
         Intent intent = getIntent();
         String catalogId = intent.getStringExtra("catalogId");
-        if (catalogId!=null){
+        if (catalogId != null) {
             mId = Integer.parseInt(catalogId);
             loadData(mId);
         }
@@ -791,6 +796,10 @@ public class MainActivity extends BaseActivity implements BaseQuickAdapter.Reque
                 ActivityUtils.startActivity(intent);
                 break;
             }
+            case R.id.fab_search:{
+                ActivityUtils.startActivity(SearchActivity.class);
+                break;
+            }
         }
     }
 
@@ -812,7 +821,9 @@ public class MainActivity extends BaseActivity implements BaseQuickAdapter.Reque
     private void downStart() {
         ToastUtils.showShort("开始下载");
         Uri uri = Uri.parse("https://ljytly.oss-cn-chengdu.aliyuncs.com/voice/audio_" + mId + ".mp3");
-        String downloadCachePath = Environment.getExternalStorageDirectory().getPath() + "/" + mId + ".mp3";
+        String download = Environment.getExternalStorageDirectory().getPath() + "/Voice/";
+        boolean mkdir = new File(download).mkdir();
+        String downloadCachePath = Environment.getExternalStorageDirectory().getPath() + "/Voice/" + mId + ".mp3";
         Aria.download(this)
                 .load(uri.toString())     //读取下载地址
                 .setFilePath(downloadCachePath) //设置文件保存的完整路径
@@ -890,8 +901,6 @@ public class MainActivity extends BaseActivity implements BaseQuickAdapter.Reque
         Log.e(TAG, "taskRunning");
 
     }
-
-
 
 
     private void loadData(int id) {
