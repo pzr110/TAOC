@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.blankj.utilcode.util.BarUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.google.android.material.snackbar.Snackbar;
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
 import com.mirkowu.basetoolbar.BaseToolbar;
 import com.pzr.taoc.BaseActivity;
@@ -33,6 +34,7 @@ import java.util.List;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
+import cn.bmob.v3.listener.UpdateListener;
 
 import static com.pzr.taoc.MainActivity.getStatusBarHeight;
 import static com.pzr.taoc.MyApplication.getContext;
@@ -102,6 +104,37 @@ public class NoteListActivity extends BaseActivity {
                 startActivity(intent);
 //                finish();
 
+            }
+        });
+
+        mAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
+            @Override
+            public void onItemChildClick(BaseQuickAdapter baseQuickAdapter, View view, int i) {
+                DataBean dataBean = mAdapter.getData().get(i);
+                String objectId = dataBean.getObjectId();
+                if (view.getId() == R.id.iv_delete) {
+                    mAdapter.remove(i);
+                    update(objectId);
+                }
+            }
+        });
+
+    }
+
+    private void update(String oId) {
+        DataBean dataBean = new DataBean();
+        dataBean.setNote("");
+        dataBean.update(oId, new UpdateListener() {
+            @Override
+            public void done(BmobException e) {
+                if (e == null) {
+                    ToastUtils.showShort("删除成功");
+//                    Snackbar.make(mBtnUpdate, "更新成功", Snackbar.LENGTH_LONG).show();
+                } else {
+                    Log.e("BMOB", e.toString());
+                    ToastUtils.showShort("删除失败");
+//                    Snackbar.make(mBtnUpdate, e.getMessage(), Snackbar.LENGTH_LONG).show();
+                }
             }
         });
     }

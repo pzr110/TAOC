@@ -29,6 +29,8 @@ public class NoteListAdapter extends BaseQuickAdapter<DataBean, BaseViewHolder> 
             helper.setText(R.id.tv_note_content, item.getNote());
         }
 
+        helper.addOnClickListener(R.id.iv_delete);
+
 
     }
 }
