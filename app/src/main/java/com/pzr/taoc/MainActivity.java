@@ -905,7 +905,7 @@ public class MainActivity extends BaseActivity implements BaseQuickAdapter.Reque
 
     private void loadData(int id) {
         BmobQuery<DataBean> bmobQuery = new BmobQuery<DataBean>();
-        bmobQuery.addQueryKeys("objectId,original,translate");
+        bmobQuery.addQueryKeys("objectId,title,original,translate");
         bmobQuery.findObjects(new FindListener<DataBean>() {
             @Override
             public void done(List<DataBean> list, BmobException e) {
@@ -915,6 +915,7 @@ public class MainActivity extends BaseActivity implements BaseQuickAdapter.Reque
                         DataBean dataBean = list.get(id);
                         mObjectId = dataBean.getObjectId();
 //                        ToastUtils.showShort(mObjectId);
+                        mBaseToolbar.setTitle(dataBean.getTitle());
                         mTvOriginal.setText(dataBean.getOriginal());
                         mTvTranslate.setText(dataBean.getTranslate());
                     } else if (id < 0) {

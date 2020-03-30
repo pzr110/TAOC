@@ -12,8 +12,17 @@ public class DataBean extends BmobObject {
     private String original;
     private String translate;
     private BmobFile voice;
+    private String title;
 
     private String note;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     public String getNote() {
         return note;
